@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerScript : MonoBehaviour
 {
     public float jumpForce;
+    public float movementSpeed=0f;
     public int jumpLimit = 2;
-    private bool canJump = true;
+    private float movementX, movementY;
     private int jumpCounter = 0;
     public Rigidbody rb;
     
@@ -34,5 +36,16 @@ public class PlayerScript : MonoBehaviour
         //{
             jumpCounter = 0;
         //}
+    }
+    private void OnMove(InputValue input)
+    {
+        Vector2 vec = input.Get<Vector2> ();
+        movementX = vec.x;
+        movementY = vec.y;
+
+    }
+    private void FixedUpdate()
+    {
+        rb.AddForce(new Vector3(movementX,0f,movementY)*movementSpeed);
     }
 }
