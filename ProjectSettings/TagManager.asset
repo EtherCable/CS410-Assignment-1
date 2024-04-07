@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Pickup Object
+  - Floor Object
+  - Respawn Object
   layers:
   - Default
   - TransparentFX

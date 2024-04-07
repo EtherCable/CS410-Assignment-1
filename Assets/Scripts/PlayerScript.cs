@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -10,13 +12,18 @@ public class PlayerScript : MonoBehaviour
     public int jumpLimit = 2;
     private float movementX, movementY;
     private int jumpCounter = 0;
-    public Rigidbody rb;
+    private int score;
+    private Rigidbody rb;
+    public TextMeshProUGUI scoreLabel;
+    public TextMeshProUGUI statusLabel;
+    public GameObject pickups;
     
 
     // Start is called before the first frame update
     void Start()
     {
       rb = GetComponent<Rigidbody>();
+        score = 0;
     }
 
     // Update is called once per frame
@@ -43,7 +50,11 @@ public class PlayerScript : MonoBehaviour
     {
         //if (collision.gameObject.GetComponent<Ga>() != null)
         //{
-        jumpCounter = 0;
+        if(collision.gameObject.CompareTag("Floor Object"))
+        {
+            jumpCounter = 0;
+
+        }
         //}
     }
 
@@ -57,9 +68,42 @@ public class PlayerScript : MonoBehaviour
         if(other.gameObject.CompareTag("Pickup Object"))
         {
             other.gameObject.SetActive(false);
+            score++;
+            UpdateScoreLabel();
 
+            if(score >= pickups.transform.childCount)
+            {
+                statusLabel.color = new Color(0f, 1f, 0f, 1f);
+                statusLabel.text = "YOU WIN";
+            }
+
+        } else if (other.gameObject.CompareTag("Respawn Object"))
+        {
+            StartCoroutine(ProcessLoss());
         }
     }
 
 
+    private IEnumerator ProcessLoss()
+    {
+        statusLabel.color = new Color(1f,0f,0f,1f);
+        statusLabel.text = "YOU LOSE";
+        for(int i = 0;i<4;i++)
+        {
+            yield return new WaitForSecondsRealtime(1);
+            statusLabel.text = statusLabel.text + "\nL";
+
+        }
+        scoreLabel.color = Color.yellow;
+        scoreLabel.text = "YOU SUCK!!!";
+        yield return new WaitForSecondsRealtime(1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+    }
+
+    void UpdateScoreLabel()
+    {
+        scoreLabel.text = $"Score: {score}";
+
+    }
 }
