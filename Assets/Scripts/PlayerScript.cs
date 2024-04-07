@@ -28,15 +28,10 @@ public class PlayerScript : MonoBehaviour
             rb.AddForce(new Vector3(0f, jumpForce, 0f), ForceMode.Impulse);
             
             jumpCounter++;
+            Debug.Log("JUMP!");
         }
     }
-    private void OnCollisionEnter(Collision collision)
-    {
-        //if (collision.gameObject.GetComponent<Ga>() != null)
-        //{
-            jumpCounter = 0;
-        //}
-    }
+
     private void OnMove(InputValue input)
     {
         Vector2 vec = input.Get<Vector2> ();
@@ -44,8 +39,27 @@ public class PlayerScript : MonoBehaviour
         movementY = vec.y;
 
     }
-    private void FixedUpdate()
+    private void OnCollisionEnter(Collision collision)
+    {
+        //if (collision.gameObject.GetComponent<Ga>() != null)
+        //{
+        jumpCounter = 0;
+        //}
+    }
+
+    void FixedUpdate()
     {
         rb.AddForce(new Vector3(movementX,0f,movementY)*movementSpeed);
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.CompareTag("Pickup Object"))
+        {
+            other.gameObject.SetActive(false);
+
+        }
+    }
+
+
 }
